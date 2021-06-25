@@ -20,7 +20,7 @@ def parseArguments():
         type=float, help='Diameter (in millimeters) of torus arm.')
     parser.add_argument('--gap', action='store', default='.5', dest='gap',
         type=float, help='Tolerance gap between pieces.')  # gap=.1 tight
-    parser.add_argument('-n', action='store', default='256', dest='fn',
+    parser.add_argument('-n', action='store', default='100', dest='fn',
         type=int, help='Curvature parameter. Number of sides on circle.')
     return parser.parse_args()
 
@@ -71,6 +71,9 @@ def mazeTorus(
     diag_cut = translate([0,0,-gap])(diag_cut)
     diag_cut += rotate([180,0,0])(diag_cut)
     final = final - diag_cut
+    # Add nub that travels in track of other torus
+    final += hull()(translate([-r-2*gap,0,0])(block), translate([-2*r,0,0])(block))
+    # final += translate([-r-2*gap,0,0])(scale([.5,1,1])(sphere(3)))
     # Orient for printing
     final = rotate([0,-90,0])(final)
     final = translate([0,0,(2+.866)*r-gap])(final)
